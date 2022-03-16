@@ -21,13 +21,23 @@ stages:
     - job: build
       steps:
       - task: UseDotNet@2
-        displayName: 'Use .NET 5'
+        displayName: 'Use .NET 6'
         inputs:
-          version: 5.x
-      - task: NuGetCommand@2
+          version: 6.x
+
+      # Install the nuget tool.
+      - task: NuGetToolInstaller@0
+        displayName: 'Use NuGet >=5.2.0'
         inputs:
-          command: 'restore'
-          restoreSolution: '**/*.sln'
+          versionSpec: '>=5.2.0'
+          checkLatest: true
+
+      # Build the Product project
+      - task: DotNetCoreCLI@2
+        displayName: 'build'
+        inputs:
+          projects: '$(Build.SourcesDirectory)\Microsoft.OpenApi.sln'
+          arguments: '--configuration $(BuildConfiguration) --no-incremental'
       
       - task: PowerShell@2
         #displayName: "Set Hidi's version-number"
