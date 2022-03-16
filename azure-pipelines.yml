@@ -114,9 +114,8 @@ stages:
                 script: |
                   echo "pipeline workspace: $(Pipeline.Workspace)" 
                   echo " Nugets: $(Pipeline.Workspace)/Nugets" 
-                  $artifactMainDirectory = Get-ChildItem -Path $(Pipeline.Workspace) -Name -recurse
-                  $artifact = Get-ChildItem -Filter Microsoft.OpenApi.Hidi-* -Recurse
-                  $artifactName= $artifact.Name -replace "Microsoft.OpenApi.Hidi-", ""                  
+                  $artifactMainDirectory = Get-ChildItem -Path $(Pipeline.Workspace) -Name -Filter Microsoft.OpenApi.Hidi-* -recurse | select -First 1
+                  $artifactName= $artifactMainDirectory.Name -replace "Microsoft.OpenApi.Hidi-", ""                  
                   $wildcard = Get-ChildItem -Recurse | Where-Object { $_.DirectoryName -match 'Microsoft.OpenApi.Hidi-*' }
                   echo "artifact: $artifact"               
                   echo "artifactMainDirectory:$artifactMainDirectory"
