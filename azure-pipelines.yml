@@ -102,8 +102,8 @@ stages:
                   $artifactName = $artifactMainDirectory.Name -replace "Microsoft.OpenApi.Hidi-", ""
                   
                   #Set Variable $artifactName
-                  echo $artifactMainDirectory
-                  echo $artifactName
+                  Write-Host $artifactMainDirectory
+                  Write-Host $artifactName
                   Write-Host "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true;]$artifactMainDirectory.FullName"
                   Write-Host "##vso[task.setvariable variable=artifactName; isSecret=false; isOutput=true;]$artifactName"
               displayName: 'Fetch Artifact Name'
@@ -114,8 +114,7 @@ stages:
                 targetType: 'inline'
                 script: |
                   $artifactMainDirectory = Get-ChildItem -Path '$(Pipeline.Workspace)/a' -recurse                 
-                  echo $artifactMainDirectory
-                  echo "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true;]$artifactMainDirectory.FullName"
+                  Write-Host $artifactMainDirectory
                   Write-Host "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true;]$artifactMainDirectory.FullName"
               displayName: 'Fetch Artifact Name'
 
