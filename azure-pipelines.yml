@@ -94,29 +94,32 @@ stages:
               displayName: Download hidi executable from artifacts
               inputs:
                 source: current
-            - task: PowerShell@2
-              inputs:
-                targetType: 'inline'
-                script: |
-                  $artifactMainDirectory = Get-ChildItem -Filter Microsoft.OpenApi.Hidi-* -Directory -Recurse | select -First 1
-                  $artifactName = $artifactMainDirectory.Name -replace "Microsoft.OpenApi.Hidi-", ""                  
-                  #Set Variable $artifactName
-                  Write-Host $artifactMainDirectory
-                  Write-Host $artifactName
-                  Write-Host "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true]$artifactMainDirectory.FullName"
-                  Write-Host "##vso[task.setvariable variable=artifactName; isSecret=false; isOutput=true]$artifactName"
-              displayName: 'Fetch Artifact Name'
+            # - task: PowerShell@2
+            #   inputs:
+            #     targetType: 'inline'
+            #     script: |
+            #       $artifactMainDirectory = Get-ChildItem -Filter Microsoft.OpenApi.Hidi-* -Directory -Recurse | select -First 1
+            #       $artifactName = $artifactMainDirectory.Name -replace "Microsoft.OpenApi.Hidi-", ""                  
+            #       #Set Variable $artifactName
+            #       Write-Host $artifactMainDirectory
+            #       Write-Host $artifactName
+            #       Write-Host "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true]$artifactMainDirectory.FullName"
+            #       Write-Host "##vso[task.setvariable variable=artifactName; isSecret=false; isOutput=true]$artifactName"
+            #   displayName: 'Fetch Artifact Name'
 
             - task: PowerShell@2
               displayName: 'Fetch Hidi Artifact Name'
               inputs:
                 targetType: 'inline'
                 script: |
-                  echo "staging directory: $(Build.ArtifactStagingDirectory)"
                   echo "pipeline workspace: $(Pipeline.Workspace)" 
                   echo " Nugets: $(Pipeline.Workspace)/Nugets" 
-                  $artifactMainDirectory = Get-Content -Path $(Pipeline.Workspace)/a -recurse                 
-                  echo $artifactMainDirectory
+                  $artifactMainDirectory = Get-ChildItem -Path $(Pipeline.Workspace) -Name -recurse
+                  $artifact = Get-ChildItem -Filter Microsoft.OpenApi.Hidi-* -Recurse
+                  $wildcard = Get-ChildItem -Recurse | Where-Object { $_.DirectoryName -match 'Microsoft.OpenApi.Hidi-*' }
+                  echo "artifact: $artifact"               
+                  echo "artifactMainDirectory:$artifactMainDirectory"
+                  echo "wildcard:$wildcard"
                   echo "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true]$artifactMainDirectory.FullName"
                   echo "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true]$artifactMainDirectory"
 
