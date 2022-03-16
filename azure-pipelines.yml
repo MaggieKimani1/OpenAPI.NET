@@ -115,7 +115,7 @@ stages:
                 script: |
                   $artifactMainDirectory = Get-ChildItem -Path '$(Pipeline.Workspace)/a' -recurse                 
                   echo $artifactMainDirectory
-
+                  echo "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true;]$artifactMainDirectory.FullName"
                   Write-Host "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true;]$artifactMainDirectory.FullName"
               displayName: 'Fetch Artifact Name'
 
