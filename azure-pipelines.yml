@@ -116,12 +116,14 @@ stages:
                   echo " Nugets: $(Pipeline.Workspace)/Nugets" 
                   $artifactMainDirectory = Get-ChildItem -Path $(Pipeline.Workspace) -Name -recurse
                   $artifact = Get-ChildItem -Filter Microsoft.OpenApi.Hidi-* -Recurse
+                  $artifactName= $artifact.Name -replace "Microsoft.OpenApi.Hidi-", ""                  
                   $wildcard = Get-ChildItem -Recurse | Where-Object { $_.DirectoryName -match 'Microsoft.OpenApi.Hidi-*' }
                   echo "artifact: $artifact"               
                   echo "artifactMainDirectory:$artifactMainDirectory"
                   echo "wildcard:$wildcard"
+                  echo "artifactName:$artifactName"
                   echo "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true]$artifactMainDirectory.FullName"
-                  echo "##vso[task.setvariable variable=artifactMainDirectory; isSecret=false; isOutput=true]$artifactMainDirectory"
+                  echo "##vso[task.setvariable variable=artifactName; isSecret=false; isOutput=true]$artifactName"
 
 
             # - powershell: |
