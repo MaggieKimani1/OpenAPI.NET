@@ -24,10 +24,13 @@ stages:
         displayName: 'Use .NET 6'
         inputs:
           version: 6.x
-      - task: NuGetCommand@2
+          
+      # Build the Product project
+      - task: DotNetCoreCLI@2
+        displayName: 'build'
         inputs:
-          command: 'restore'
-          restoreSolution: '**/*.sln'
+          projects: '$(Build.SourcesDirectory)\Microsoft.OpenApi.sln'
+          arguments: '--configuration $(BuildConfiguration) --no-incremental'
       
       - task: PowerShell@2
         #displayName: "Set Hidi's version-number"
