@@ -21,9 +21,9 @@ stages:
     - job: build
       steps:
       - task: UseDotNet@2
-        displayName: 'Use .NET 5'
+        displayName: 'Use .NET 6'
         inputs:
-          version: 5.x
+          version: 6.x
       - task: NuGetCommand@2
         inputs:
           command: 'restore'
