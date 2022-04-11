@@ -50,15 +50,15 @@ stages:
           configuration: Release
           msbuildArguments: '/t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)/Nugets /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg'
 
-      # # publish hidi as an .exe
-      # - task: DotNetCoreCLI@2
-      #   displayName: publish Hidi as executable
-      #   inputs:
-      #     command: 'publish'
-      #     arguments: -c Release --runtime win-x64 /p:PublishSingleFile=true --self-contained --output $(Build.ArtifactStagingDirectory)/Microsoft.OpenApi.Hidi-v$(version) -p:PublishTrimmed=true
-      #     projects: 'src/Microsoft.OpenApi.Hidi/Microsoft.OpenApi.Hidi.csproj'
-      #     publishWebProjects: False
-      #     zipAfterPublish: false 
+      # publish hidi as an .exe
+      - task: DotNetCoreCLI@2
+        displayName: publish Hidi as executable
+        inputs:
+          command: 'publish'
+          arguments: -c Release --runtime win-x64 /p:PublishSingleFile=true --self-contained --output $(Build.ArtifactStagingDirectory)/Microsoft.OpenApi.Hidi-v$(version) -p:PublishTrimmed=true
+          projects: 'src/Microsoft.OpenApi.Hidi/Microsoft.OpenApi.Hidi.csproj'
+          publishWebProjects: False
+          zipAfterPublish: false 
 
       - task: PublishBuildArtifacts@1
         displayName: 'Package Hidi'
