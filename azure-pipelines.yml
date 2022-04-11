@@ -88,7 +88,7 @@ stages:
               inputs:
                 targetType: 'inline'
                 script: |
-                  $artifactName = Get-ChildItem -Path $(Pipeline.Workspace)/Nugets/Microsoft.OpenApi.Hidi.*.nupkg -Filter Microsoft.OpenApi.Hidi-* -recurse | select -First 1
+                  $artifactName = Get-Item -Path $(Pipeline.Workspace)/Nugets/Microsoft.OpenApi.Hidi.*.nupkg -Filter Microsoft.OpenApi.Hidi-*.nupkg -recurse | select -First 1
                   $artifactVersion= $artifactName -replace "Microsoft.OpenApi.Hidi-", "" -replace ".nupkg", ""               
                   #Set Variable $artifactName and $artifactVersion
                   Write-Host "##vso[task.setvariable variable=artifactVersion; isSecret=false; isOutput=true]$artifactVersion"
