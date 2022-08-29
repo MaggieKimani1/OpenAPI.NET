@@ -11,7 +11,7 @@ pr: none
 
 pool:
   name: Azure Pipelines
-  vmImage: windows-latest
+  vmImage: ubuntu-latest
   demands:
   - msbuild
   - vstest
@@ -34,66 +34,6 @@ steps:
     vsTestVersion: 16.0
     codeCoverageEnabled: true
 
-- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
-  displayName: 'ESRP CodeSigning'
-  inputs:
-    ConnectedServiceName: 'microsoftgraph ESRP CodeSign DLL and NuGet (AKV)'
-    FolderPath: src
-    signConfigType: inlineSignParams
-    inlineOperation: |
-     [
-         {
-             "keyCode": "CP-230012",
-             "operationSetCode": "SigntoolSign",
-             "parameters": [
-             {
-                 "parameterName": "OpusName",
-                 "parameterValue": "Microsoft"
-             },
-             {
-                 "parameterName": "OpusInfo",
-                 "parameterValue": "http://www.microsoft.com"
-             },
-             {
-                 "parameterName": "FileDigest",
-                 "parameterValue": "/fd \"SHA256\""
-             },
-             {
-                 "parameterName": "PageHash",
-                 "parameterValue": "/NPH"
-             },
-             {
-                 "parameterName": "TimeStamp",
-                 "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
-             }
-             ],
-             "toolName": "sign",
-             "toolVersion": "1.0"
-         },
-         {
-             "keyCode": "CP-230012",
-             "operationSetCode": "SigntoolVerify",
-             "parameters": [ ],
-             "toolName": "sign",
-             "toolVersion": "1.0"
-         }
-     ]
-    SessionTimeout: 20
-
-- task: MSBuild@1
-  displayName: 'Pack OpenAPI'
-  inputs:
-    solution: src/Microsoft.OpenApi/Microsoft.OpenApi.csproj
-    configuration: Release
-    msbuildArguments: '/t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory) /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg'
-
-- task: MSBuild@1
-  displayName: 'Pack OpenAPI Readers'
-  inputs:
-    solution: src/Microsoft.OpenApi.Readers/Microsoft.OpenApi.Readers.csproj
-    configuration: Release
-    msbuildArguments: '/t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory) /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg'
-
 - task: MSBuild@1
   displayName: 'Pack OpenApi Hidi'
   inputs:
@@ -101,33 +41,18 @@ steps:
     configuration: Release
     msbuildArguments: '/t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory) /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg'
 
-- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
-  displayName: 'ESRP CodeSigning Nuget Packages'
+- task: GitHubRelease@1
+  displayName: 'GitHub release (edit)'
+  condition: succeededOrFailed()
   inputs:
-    ConnectedServiceName: 'microsoftgraph ESRP CodeSign DLL and NuGet (AKV)'
-    FolderPath: '$(Build.ArtifactStagingDirectory)'
-    Pattern: '*.nupkg'
-    signConfigType: inlineSignParams
-    inlineOperation: |
-     [
-         {
-             "keyCode": "CP-401405",
-             "operationSetCode": "NuGetSign",
-             "parameters": [ ],
-             "toolName": "sign",
-             "toolVersion": "1.0"
-         },
-         {
-             "keyCode": "CP-401405",
-             "operationSetCode": "NuGetVerify",
-             "parameters": [ ],
-             "toolName": "sign",
-             "toolVersion": "1.0"
-         }
-     ]
-    SessionTimeout: 20
+    gitHubConnection: 'Github-MaggieKimani1'
+    action: edit
+    tagSource: userSpecifiedTag
+    tag: '$(artifactVersion)'
+    title: '$(artifactVersion)'
+    releaseNotesSource: inline
+    # assets: '$(Pipeline.Workspace)\**\*.exe'
+    changeLogType: issueBased
+    changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugs", "state" : "closed" }]'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: Nugets'
-  inputs:
-    ArtifactName: Nugets
+
